@@ -50,6 +50,9 @@ namespace DataLayer.Migrations
                     b.Property<int>("Course")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
