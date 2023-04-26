@@ -80,6 +80,15 @@ namespace Core.Services
             return result;
         }
 
+        public StudentGradesDto GetStudentGrades(int studentId)
+        {
+            Student student = unitOfWork.Students.GetStudentGrades(studentId);
+
+            var result = new StudentGradesDto(student);
+
+            return result;
+        }
+
         public List<string> GetClassStudents(int classId)
         {
             var students = unitOfWork.Students.GetClassStudents(classId);

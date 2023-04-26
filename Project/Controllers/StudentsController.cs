@@ -9,7 +9,6 @@ namespace Project.Controllers
 {
     [ApiController]
     [Route("api/students")]
-    [Authorize]
     public class StudentsController : ControllerBase
     {
         private StudentService studentService { get; set; }
@@ -21,7 +20,7 @@ namespace Project.Controllers
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
-        
+
         [HttpPost("register/student")]
         [AllowAnonymous]
         public IActionResult RegisterUser(RegisterDto registerData)
@@ -40,6 +39,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("test-auth")]
+        [AllowAnonymous]
         public IActionResult TestAuth()
         {
             ClaimsPrincipal user = User;
@@ -51,8 +51,8 @@ namespace Project.Controllers
                 result += claim.Type + " : " + claim.Value + '\n';
             }
 
-            bool hasRole_student = user.IsInRole("Student");
-            bool hasRole_teacher = user.IsInRole("Teacher");
+            var hasRole_student = user.IsInRole("Student");
+            var hasRole_teacher = user.IsInRole("Teacher");
 
             return Ok(result);
         }
@@ -123,6 +123,14 @@ namespace Project.Controllers
         public ActionResult<GradesByStudent> Get_CourseGrades_ByStudentId([FromBody] StudentGradesRequest request)
         {
             var result = studentService.GetGradesById(request.StudentId, request.CourseType);
+            return Ok(result);
+        }
+
+        [HttpPost("all-grades/{studentId}")]
+        public ActionResult<StudentGradesDto> GetStudentGrades( int studentId)
+        {
+            var result = studentService.GetStudentGrades(studentId);
+
             return Ok(result);
         }
 

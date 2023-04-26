@@ -32,6 +32,24 @@ namespace DataLayer.Repositories
             return result;
         }
 
+        public Student GetStudentGrades(int studentId)
+        {
+            var result = dbContext.Students
+                .Select(e => new Student
+                {
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    Id = e.Id,
+                    ClassId = e.ClassId,
+                    Grades = e.Grades
+                        .OrderByDescending(g => g.Value)
+                        .ToList()
+                })
+               .FirstOrDefault(e => e.Id == studentId);
+
+            return result;
+        }
+
         public List<string> GetClassStudents(int classId)
         {
             var results = dbContext.Students
