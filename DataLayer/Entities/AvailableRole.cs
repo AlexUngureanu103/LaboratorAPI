@@ -1,6 +1,6 @@
 ﻿namespace DataLayer.Entities
 {
-    public class Role : BaseEntity
+    public class AvailableRole : BaseEntity
     {
         public string AssignedRole { get; set; }
     }

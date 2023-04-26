@@ -25,7 +25,7 @@ namespace DataLayer
 
         public DbSet<Student> Students { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<AvailableRole> Roles { get; set; }
 
         public DbSet<User> Users { get; set; }
     }

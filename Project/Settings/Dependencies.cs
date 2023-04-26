@@ -19,11 +19,11 @@ namespace Project.Settings
 
         private static void AddServices(IServiceCollection services)
         {
+            services.AddScoped<AuthorizationService>();
             services.AddScoped<StudentService>();
             services.AddScoped<ClassService>();
             services.AddScoped<GradeService>();
             services.AddScoped<UserService>();
-            services.AddScoped<AuthorizationService>();
         }
 
         private static void AddRepositories(IServiceCollection services)

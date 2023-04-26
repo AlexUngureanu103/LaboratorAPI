@@ -11,7 +11,7 @@ namespace Core.Services
     {
         private readonly UnitOfWork unitOfWork;
 
-        public StudentService(UnitOfWork unitOfWork, AuthorizationService authorizationService)
+        public StudentService(UnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
