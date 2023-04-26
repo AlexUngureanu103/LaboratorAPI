@@ -43,8 +43,9 @@ namespace Core.Services
                 Issuer = "Backend",
                 Audience = "Frontend",
                 Subject = new ClaimsIdentity(new[] { roleClaim, idClaim, infoClaim }),
-                Expires = DateTime.Now.AddYears(1),
-                SigningCredentials = credentials
+                Expires = DateTime.Now.AddMinutes(5),
+                SigningCredentials = credentials,
+                
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptior);
