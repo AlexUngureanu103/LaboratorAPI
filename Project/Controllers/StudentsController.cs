@@ -73,7 +73,7 @@ namespace Project.Controllers
         }
 
         [HttpPost("grades-by-course")]
-        [Authorize(Roles = "Student,Teacher")]
+        [Authorize(Roles = "Student, Teacher")]
         public ActionResult<GradesByStudent> Get_CourseGrades_ByStudentId([FromBody] StudentGradesRequest request)
         {
             var result = studentService.GetGradesById(request.StudentId, request.CourseType);
@@ -81,7 +81,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("{classId}/class-students")]
-        [Authorize(Roles = "Student,Teacher")]
+        [Authorize(Roles = "Student, Teacher")]
         public IActionResult GetClassStudents([FromRoute] int classId)
         {
             var results = studentService.GetClassStudents(classId);
@@ -90,7 +90,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("grouped-students")]
-        [Authorize(Roles = "Student,Teacher")]
+        [Authorize(Roles = "Student, Teacher")]
         public IActionResult GetGroupedStudents()
         {
             var results = studentService.GetGroupedStudents();
