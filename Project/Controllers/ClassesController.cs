@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Project.Controllers
 {
-
     [ApiController]
     [Route("api/classes")]
     public class ClassesController : ControllerBase
