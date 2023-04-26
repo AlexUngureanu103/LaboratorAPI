@@ -1,7 +1,6 @@
-﻿using DataLayer.Repositories;
-using Core.Services;
+﻿using Core.Services;
 using DataLayer;
-using Microsoft.EntityFrameworkCore;
+using DataLayer.Repositories;
 
 namespace Project.Settings
 {
@@ -24,6 +23,8 @@ namespace Project.Settings
             services.AddScoped<StudentService>();
             services.AddScoped<ClassService>();
             services.AddScoped<GradeService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<AuthorizationService>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -31,6 +32,8 @@ namespace Project.Settings
             services.AddScoped<StudentsRepository>();
             services.AddScoped<ClassRepository>();
             services.AddScoped<GradesRepository>();
+            services.AddScoped<UsersRepository>();
+            services.AddScoped<RoleRepository>();
             services.AddScoped<UnitOfWork>();
         }
 

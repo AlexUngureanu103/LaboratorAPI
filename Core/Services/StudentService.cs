@@ -11,9 +11,9 @@ namespace Core.Services
     {
         private readonly UnitOfWork unitOfWork;
 
-        public StudentService(UnitOfWork unitOfWork)
+        public StudentService(UnitOfWork unitOfWork, AuthorizationService authorizationService)
         {
-            this.unitOfWork = unitOfWork;
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public StudentAddDto AddStudent(StudentAddDto payload)
@@ -74,7 +74,7 @@ namespace Core.Services
         public GradesByStudent GetGradesById(int studentId, CourseType courseType)
         {
             var studentWithGrades = unitOfWork.Students.GetByIdWithGrades(studentId, courseType);
-            
+
             var result = new GradesByStudent(studentWithGrades);
 
             return result;
