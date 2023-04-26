@@ -51,10 +51,6 @@ namespace Project.Controllers
         [AllowAnonymous]
         public IActionResult TestAuth()
         {
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-            var valid = userService.ValidateToken(token);
-
             ClaimsPrincipal user = User;
 
             string result = string.Empty;
@@ -70,13 +66,42 @@ namespace Project.Controllers
             return Ok(result);
         }
 
-        [HttpPost("all-grades/{studentId}")]
-        [Authorize(Roles = "Student,Teacher")]
+        [HttpGet("all-grades")]
+        [Authorize(Roles = "Student")]
+        public ActionResult<StudentGradesDto> GetGrades()
+        {
+            ClaimsPrincipal user = User;
+
+            int userId = int.Parse(user.FindFirst("userId").Value);
+
+            var studentId = userService.GetById(userId).StudentId;
+
+            var result = studentService.GetStudentGrades(studentId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-student-grades/{studentId}")]
+        [Authorize(Roles = "Teacher")]
         public ActionResult<StudentGradesDto> GetStudentGrades(int studentId)
         {
             var result = studentService.GetStudentGrades(studentId);
 
             return Ok(result);
+        }
+
+        [HttpGet("students-only")]
+        [Authorize(Roles = "Student")]
+        public ActionResult<StudentGradesDto> HelloStudents()
+        {
+            return Ok("Hello Students!");
+        }
+
+        [HttpGet("teacher-only")]
+        [Authorize(Roles = "Teacher")]
+        public ActionResult<string> HelloTeachers()
+        {
+            return Ok("Hello teachers!");
         }
 
         [HttpGet("/get-user/{userId}")]

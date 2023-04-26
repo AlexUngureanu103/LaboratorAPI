@@ -20,20 +20,6 @@ namespace Project.Controllers
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
         }
 
-        [HttpGet("students-only")]
-        [Authorize(Roles = "Student")]
-        public ActionResult<string> HelloStudents()
-        {
-            return Ok("Hello students!");
-        }
-
-        [HttpGet("teacher-only")]
-        [Authorize(Roles = "Teacher")]
-        public ActionResult<string> HelloTeachers()
-        {
-            return Ok("Hello teachers!");
-        }
-
         [HttpPost("/add")]
         [AllowAnonymous]
         public IActionResult Add(StudentAddDto payload)

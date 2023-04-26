@@ -83,7 +83,7 @@ namespace Core.Services
         public StudentGradesDto GetStudentGrades(int studentId)
         {
             Student student = unitOfWork.Students.GetStudentGrades(studentId);
-
+            if(student == null) return null;
             var result = new StudentGradesDto(student);
 
             return result;
