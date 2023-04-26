@@ -1,3 +1,4 @@
+using Infrastructure.Middlewares;
 using Project.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ builder.Services.AddEndpointsApiExplorer();
 Dependencies.Inject(builder);
 
 var app = builder.Build();
+
+app.UseMiddleware<LoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseSwagger(c =>
 {

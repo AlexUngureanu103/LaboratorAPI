@@ -57,7 +57,6 @@ namespace Project.Controllers
             return Ok(result);
         }
 
-
         [HttpGet("students-only")]
         [Authorize(Roles = "Student")]
         public ActionResult<string> HelloStudents()
