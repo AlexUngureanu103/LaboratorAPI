@@ -14,49 +14,11 @@ namespace Project.Controllers
     {
         private StudentService studentService { get; set; }
 
-        private UserService userService { get; set; }
 
-        public StudentsController(StudentService studentService, UserService userService)
+        public StudentsController(StudentService studentService)
         {
             this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
-            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
-        
-        [HttpPost("register/student")]
-        [AllowAnonymous]
-        public IActionResult RegisterUser(RegisterDto registerData)
-        {
-            userService.Register(registerData);
-            return Ok();
-        }
-
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public IActionResult Login(LoginDto payload)
-        {
-            string jwtToken = userService.Validate(payload);
-
-            return Ok(new { token = jwtToken });
-        }
-
-        [HttpGet("test-auth")]
-        public IActionResult TestAuth()
-        {
-            ClaimsPrincipal user = User;
-
-            string result = string.Empty;
-
-            foreach (var claim in user.Claims)
-            {
-                result += claim.Type + " : " + claim.Value + '\n';
-            }
-
-            bool hasRole_student = user.IsInRole("Student");
-            bool hasRole_teacher = user.IsInRole("Teacher");
-
-            return Ok(result);
-        }
-
 
         [HttpGet("students-only")]
         [Authorize(Roles = "Student")]
@@ -73,6 +35,7 @@ namespace Project.Controllers
         }
 
         [HttpPost("/add")]
+        [AllowAnonymous]
         public IActionResult Add(StudentAddDto payload)
         {
             var result = studentService.AddStudent(payload);
@@ -87,6 +50,7 @@ namespace Project.Controllers
 
 
         [HttpGet("/get-all")]
+        [AllowAnonymous]
         public ActionResult<List<Student>> GetAll()
         {
             var results = studentService.GetAll();
@@ -95,6 +59,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("/get/{studentId}")]
+        [AllowAnonymous]
         public ActionResult<Student> GetById(int studentId)
         {
             var result = studentService.GetById(studentId);
@@ -108,6 +73,7 @@ namespace Project.Controllers
         }
 
         [HttpPatch("edit-name")]
+        [Authorize(Roles = "Teacher")]
         public ActionResult<bool> GetById([FromBody] StudentUpdateDto studentUpdateModel)
         {
             var result = studentService.EditName(studentUpdateModel);
@@ -121,6 +87,7 @@ namespace Project.Controllers
         }
 
         [HttpPost("grades-by-course")]
+        [Authorize(Roles = "Student,Teacher")]
         public ActionResult<GradesByStudent> Get_CourseGrades_ByStudentId([FromBody] StudentGradesRequest request)
         {
             var result = studentService.GetGradesById(request.StudentId, request.CourseType);
@@ -128,6 +95,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("{classId}/class-students")]
+        [Authorize(Roles = "Student,Teacher")]
         public IActionResult GetClassStudents([FromRoute] int classId)
         {
             var results = studentService.GetClassStudents(classId);
@@ -136,6 +104,7 @@ namespace Project.Controllers
         }
 
         [HttpGet("grouped-students")]
+        [Authorize(Roles = "Student,Teacher")]
         public IActionResult GetGroupedStudents()
         {
             var results = studentService.GetGroupedStudents();

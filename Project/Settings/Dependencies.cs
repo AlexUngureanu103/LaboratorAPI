@@ -6,7 +6,6 @@ namespace Project.Settings
 {
     public static class Dependencies
     {
-
         public static void Inject(WebApplicationBuilder applicationBuilder)
         {
             applicationBuilder.Services.AddControllers();
@@ -20,11 +19,11 @@ namespace Project.Settings
 
         private static void AddServices(IServiceCollection services)
         {
+            services.AddScoped<AuthorizationService>();
             services.AddScoped<StudentService>();
             services.AddScoped<ClassService>();
             services.AddScoped<GradeService>();
             services.AddScoped<UserService>();
-            services.AddScoped<AuthorizationService>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -36,6 +35,5 @@ namespace Project.Settings
             services.AddScoped<RoleRepository>();
             services.AddScoped<UnitOfWork>();
         }
-
     }
 }

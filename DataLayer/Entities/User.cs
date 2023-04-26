@@ -4,9 +4,9 @@ namespace DataLayer.Entities
 {
     public class User : BaseEntity
     {
-        public int RoleId { get; set; }
+        public int AvailableRoleId { get; set; }
 
-        public Role Role { get; set; }
+        public AvailableRole AvailableRole { get; set; }
 
         [AllowNull]
         public int StudentId { get; set; }

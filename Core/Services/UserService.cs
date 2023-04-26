@@ -8,7 +8,7 @@ namespace Core.Services
     {
         private readonly UnitOfWork unitOfWork;
 
-        private readonly AuthorizationService authorizationService;
+        private AuthorizationService authorizationService;
 
         public UserService(UnitOfWork unitOfWork, AuthorizationService authorizationService)
         {
@@ -16,59 +16,51 @@ namespace Core.Services
             this.authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
         }
 
-        public void Register(RegisterDto registerData)
+        public RegisterDto Register(RegisterDto registerData)
         {
             if (registerData == null)
             {
-                return;
+                return null;
             }
+
+            var isValidRole = unitOfWork.Roles.GetById(registerData.RoleId);
+            if (isValidRole == null) return null;
+
             string hashedPassword = authorizationService.HashPassword(registerData.Password);
 
             User user = new User
             {
                 Email = registerData.Email,
-                PasswordHash = registerData.Password,
+                PasswordHash = hashedPassword,
                 StudentId = registerData.StudentId,
-                RoleId = registerData.RoleId
+                AvailableRoleId = registerData.RoleId
             };
 
             unitOfWork.Users.Insert(user);
             unitOfWork.SaveChanges();
+
+            return registerData;
         }
 
         public string Validate(LoginDto payload)
         {
             User user = unitOfWork.Users.GetByEmail(payload.Email);
+            if (user == null)
+                return null;
 
             bool passwordFine = authorizationService.VerifyHashedPassword(user.PasswordHash, payload.Password);
 
             if (passwordFine)
             {
-                string role = unitOfWork.Roles.GetById(user.RoleId).AssignedRole;
+                string role = unitOfWork.Roles.GetById(user.AvailableRoleId).AssignedRole;
                 return authorizationService.GetToken(user, role);
             }
             return null;
         }
 
-        public UserAddDto AddUser(UserAddDto payload)
+        public bool ValidateToken(string tokenString)
         {
-            if (payload == null) return null;
-
-            var isValidRole = unitOfWork.Roles.GetById(payload.RoleId);
-            if (isValidRole == null) return null;
-
-            User newUser = new User
-            {
-                PasswordHash = authorizationService.HashPassword(payload.Password),
-                Email = payload.Email,
-                RoleId = payload.RoleId,
-                StudentId = payload.StudentId
-            };
-
-            unitOfWork.Users.Insert(newUser);
-            unitOfWork.SaveChanges();
-
-            return payload;
+            return authorizationService.ValidateToken(tokenString);
         }
 
         public List<User> GetAll()

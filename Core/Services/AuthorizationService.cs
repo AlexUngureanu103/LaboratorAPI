@@ -45,7 +45,6 @@ namespace Core.Services
                 Subject = new ClaimsIdentity(new[] { roleClaim, idClaim, infoClaim }),
                 Expires = DateTime.Now.AddMinutes(5),
                 SigningCredentials = credentials,
-                
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptior);
