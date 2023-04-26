@@ -1,4 +1,6 @@
-﻿namespace Core.Dtos
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Core.Dtos
 {
     public class UserAddDto
     {
