@@ -1,21 +1,75 @@
 ﻿using Core.Dtos;
 using Core.Services;
-using DataLayer.Dtos;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Project.Controllers
 {
     [ApiController]
     [Route("api/students")]
+    [Authorize]
     public class StudentsController : ControllerBase
     {
         private StudentService studentService { get; set; }
 
+        private UserService userService { get; set; }
 
-        public StudentsController(StudentService studentService)
+        public StudentsController(StudentService studentService, UserService userService)
         {
-            this.studentService = studentService;
+            this.studentService = studentService ?? throw new ArgumentNullException(nameof(studentService));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        }
+        
+        [HttpPost("register/student")]
+        [AllowAnonymous]
+        public IActionResult RegisterUser(RegisterDto registerData)
+        {
+            userService.Register(registerData);
+            return Ok();
+        }
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public IActionResult Login(LoginDto payload)
+        {
+            string jwtToken = userService.Validate(payload);
+
+            return Ok(new { token = jwtToken });
+        }
+
+        [HttpGet("test-auth")]
+        public IActionResult TestAuth()
+        {
+            ClaimsPrincipal user = User;
+
+            string result = string.Empty;
+
+            foreach (var claim in user.Claims)
+            {
+                result += claim.Type + " : " + claim.Value + '\n';
+            }
+
+            bool hasRole_student = user.IsInRole("Student");
+            bool hasRole_teacher = user.IsInRole("Teacher");
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("students-only")]
+        [Authorize(Roles = "Student")]
+        public ActionResult<string> HelloStudents()
+        {
+            return Ok("Hello students!");
+        }
+
+        [HttpGet("teacher-only")]
+        [Authorize(Roles = "Teacher")]
+        public ActionResult<string> HelloTeachers()
+        {
+            return Ok("Hello teachers!");
         }
 
         [HttpPost("/add")]
@@ -45,7 +99,7 @@ namespace Project.Controllers
         {
             var result = studentService.GetById(studentId);
 
-            if(result == null)
+            if (result == null)
             {
                 return BadRequest("Student not fount");
             }

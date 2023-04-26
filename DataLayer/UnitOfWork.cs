@@ -13,13 +13,16 @@ namespace DataLayer
 
         public GradesRepository Grades { get; }
 
+        public RoleRepository Roles { get; }
+
         public UnitOfWork
         (
             AppDbContext dbContext,
             StudentsRepository studentsRepository,
             ClassRepository classes,
             GradesRepository gradesRepository,
-            UsersRepository usersRepository
+            UsersRepository usersRepository,
+            RoleRepository roleRepository
         )
         {
             _dbContext = dbContext;
@@ -27,6 +30,7 @@ namespace DataLayer
             Classes = classes;
             Grades = gradesRepository;
             Users = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
+            Roles = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
         }
 
         public void SaveChanges()

@@ -44,11 +44,45 @@ namespace Core.Services
 
             if (passwordFine)
             {
-                string role = user.Role.AssignedRole;
+                string role = unitOfWork.Roles.GetById(user.RoleId).AssignedRole;
                 return authorizationService.GetToken(user, role);
             }
             return null;
         }
 
+        public UserAddDto AddUser(UserAddDto payload)
+        {
+            if (payload == null) return null;
+
+            var isValidRole = unitOfWork.Roles.GetById(payload.RoleId);
+            if (isValidRole == null) return null;
+
+            User newUser = new User
+            {
+                PasswordHash = authorizationService.HashPassword(payload.Password),
+                Email = payload.Email,
+                RoleId = payload.RoleId,
+                StudentId = payload.StudentId
+            };
+
+            unitOfWork.Users.Insert(newUser);
+            unitOfWork.SaveChanges();
+
+            return payload;
+        }
+
+        public List<User> GetAll()
+        {
+            List<User> results = unitOfWork.Users.GetAll();
+
+            return results;
+        }
+
+        public User GetById(int userId)
+        {
+            User user = unitOfWork.Users.GetById(userId);
+
+            return user;
+        }
     }
 }
